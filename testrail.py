@@ -2181,7 +2181,7 @@ class Suite(_TestrailObject):
               updated_after=None,
               updated_before=None):
         """
-        This is most important method to find and filter cases.
+        Find and filter cases.
 
         :arg types: A list of case type names to filter by
         :arg priorities: list of priorities names to filter by
@@ -2202,6 +2202,7 @@ class Suite(_TestrailObject):
         :type updated_by: list of [str]
         :type updated_after: datetime.datetime
         :type updated_before: datetime.datetime
+        :rtype: list of [Case]
         """
         data = {}
 
@@ -2257,57 +2258,8 @@ class Suite(_TestrailObject):
 
         return [Case(c) for c in TestrailAPI.get_cases(self.project_id,
                                                        self.id,
-                                                       section,
+                                                       section.id,
                                                        **data)]
-
-        pattern = 'get_cases/%s&suite_id=%s' % (self.project_id, self.id)
-
-        if types is not None:
-            pattern += '&type_id=%s' % ','.join(
-                [str(Testrail.get_case_type_by_name(t).id) for t in types]
-            )
-
-        if priorities is not None:
-            pattern += '&priority_id=%s' % ','.join(
-                [str(Testrail.get_priority_by_name(p).id) for p in priorities]
-            )
-
-        if milestones is not None:
-            pattern += '&milestone_id=%s' % ','.join(
-                [str(self.project.get_milestone_by_name(m).id) for m in milestones]
-            )
-
-        if created_by is not None:
-            pattern += '&created_by=%s' % ','.join(
-                [str(Testrail.get_user_by_name(u).id) for u in created_by]
-            )
-
-        if created_after is not None:
-            pattern += '&created_after=%s' % int(time.mktime(
-                created_after.timetuple()
-            ))
-
-        if created_before is not None:
-            pattern += '&created_before=%s' % int(time.mktime(
-                created_before.timetuple()
-            ))
-
-        if updated_by is not None:
-            pattern += '&updated_by=%s' % ','.join(
-                [str(Testrail.get_user_by_name(u).id) for u in updated_by]
-            )
-
-        if updated_after is not None:
-            pattern += '&updated_after=%s' % int(time.mktime(
-                updated_after.timetuple()
-            ))
-
-        if updated_before is not None:
-            pattern += '&updated_before=%s' % int(time.mktime(
-                updated_before.timetuple()
-            ))
-
-        return [Case(c) for c in json.loads(result.text)]
 
     def add_run(self, name, description='', milestone=None,
                 assignedto=None, include_all=None, cases=None):
@@ -2812,6 +2764,7 @@ class Section(_TestrailObject):
         return Section(TestrailAPI.add_section(self.suite.project_id, **data))
 
     def cases(self,
+              include_subsections=False,
               types=None,
               priorities=None,
               milestones=None,
@@ -2824,6 +2777,7 @@ class Section(_TestrailObject):
         """
         This is most important method to find and filter cases.
 
+        :arg include_subsections: if True - search recursive
         :arg types: A list of case type names to filter by
         :arg priorities: list of priorities names to filter by
         :arg milestones: list of milestones names to filter by
@@ -2834,6 +2788,7 @@ class Section(_TestrailObject):
         :arg updated_after: Only return test cases updated after this date
         :arg updated_before: Only return test cases updated before this date
 
+        :type include_subsections: bool
         :type types: list od [str]
         :type priorities: list of [str]
         :type milestones: list of [str]
@@ -2892,10 +2847,25 @@ class Section(_TestrailObject):
                 updated_before.timetuple()
             ))
 
-        return [Case(c) for c in TestrailAPI.get_cases(self.suite.project_id,
+        if not include_subsections:
+            return [Case(c) for c in TestrailAPI.get_cases(self.suite.project_id,
+                                                           self.suite_id,
+                                                           self.id,
+                                                           **data)]
+        else:
+            result = [
+                Case(c) for c in TestrailAPI.get_cases(self.suite.project_id,
                                                        self.suite_id,
                                                        self.id,
-                                                       **data)]
+                                                       **data)
+            ]
+            for sec in self.children:
+                result.extend(
+                    sec.cases(True, types, priorities, milestones, created_by,
+                              created_after, created_before, updated_by,
+                              updated_after, updated_before)
+                )
+            return result
 
     def add_case(self):
         raise NotImplementedError
