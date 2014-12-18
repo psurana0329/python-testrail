@@ -2803,7 +2803,7 @@ class Section(_TestrailObject):
 
         if types is not None:
             data['type_id'] = [
-                [str(Testrail.get_case_type_by_name(t).id) for t in types]
+                str(Testrail.get_case_type_by_name(t).id) for t in types
             ]
 
         if priorities is not None:
