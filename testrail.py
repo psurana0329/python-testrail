@@ -3140,19 +3140,16 @@ class Test(_TestrailObject):
         return Result(TestrailAPI.add_result(self.id, **data))
 
     def set_passed(self, **kwargs):
-        return self.add_result(1, **kwargs)
+        return self.add_result('Passed', **kwargs)
 
     def set_blocked(self, **kwargs):
-        return self.add_result(2, **kwargs)
-
-    def set_untested(self, **kwargs):
-        return self.add_result(3, **kwargs)
+        return self.add_result('Blocked', **kwargs)
 
     def set_retest(self, **kwargs):
-        return self.add_result(4, **kwargs)
+        return self.add_result('Retest', **kwargs)
 
     def set_failed(self, **kwargs):
-        return self.add_result(5, **kwargs)
+        return self.add_result('Failed', **kwargs)
 
     def results(self,
                 statuses=None,
