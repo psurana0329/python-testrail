@@ -1771,9 +1771,9 @@ class ConfigGroup(object):
         self.id = attributes['id']
         self.name = attributes['name']
         self.project_id = attributes['project_id']
-        self.configs = {
-            k['id']: k['name'] for k in attributes['configs']
-        }
+        self.configs = {}
+        for k in attributes['configs']:
+            k['id'] = k['name']
 
 
 class Milestone(_TestrailObject):
