@@ -1807,7 +1807,7 @@ class Milestone(_TestrailObject):
         self.url = attributes['url']
 
         self.due_on_stamp = attributes['due_on']
-        self.due_on = datetime.datetime.fromtimestamp(attributes['due_on'])
+        self.due_on = datetime.datetime.fromtimestamp(float(attributes['due_on']))
         self.is_completed = attributes['is_completed']
         self.completed_on = attributes['completed_on']
 
@@ -2473,8 +2473,8 @@ class Run(_TestrailObject):
         self.completed_on_stamp = attributes['completed_on']
 
         try:
-            self.created_on = datetime.datetime.fromtimestamp(attributes['created_on'])
-            self.completed_on = datetime.datetime.fromtimestamp(attributes['completed_on'])
+            self.created_on = datetime.datetime.fromtimestamp(float(attributes['created_on']))
+            self.completed_on = datetime.datetime.fromtimestamp(float(attributes['completed_on']))
         except TypeError:
             self.created_on = None
             self.completed_on = None
@@ -2925,10 +2925,10 @@ class Case(_TestrailObject):
         self.estimate_forecast = attributes['estimate_forecast']
 
         self.created_on_stamp = attributes['created_on']
-        self.created_on = datetime.datetime.fromtimestamp(attributes['created_on'])
+        self.created_on = datetime.datetime.fromtimestamp(float(attributes['created_on']))
         self.created_by_id = attributes['created_by']
         self.updated_on_stamp = attributes['updated_on']
-        self.updated_on = datetime.datetime.fromtimestamp(attributes['updated_on'])
+        self.updated_on = datetime.datetime.fromtimestamp(float(attributes['updated_on']))
         self.updated_by_id = attributes['updated_by']
 
         # and all the custom fields:
@@ -3212,7 +3212,7 @@ class Result(_TestrailObject):
         self.status_id = attributes['status_id']
         self.version = attributes['version']
         self.created_on_stamp = attributes['created_on']
-        self.created_on = datetime.datetime.fromtimestamp(attributes['created_on'])
+        self.created_on = datetime.datetime.fromtimestamp(float(attributes['created_on']))
         self.created_by_id = attributes['created_by']
         self.assignedto_id = attributes['assignedto_id']
         self.comment = attributes['comment']
