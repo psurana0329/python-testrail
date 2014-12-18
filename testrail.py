@@ -1807,7 +1807,10 @@ class Milestone(_TestrailObject):
         self.url = attributes['url']
 
         self.due_on_stamp = attributes['due_on']
-        self.due_on = datetime.datetime.fromtimestamp(float(attributes['due_on']))
+        try:
+            self.due_on = datetime.datetime.fromtimestamp(float(attributes['due_on']))
+        except TypeError:
+            self.duo_on = None
         self.is_completed = attributes['is_completed']
         self.completed_on = attributes['completed_on']
 
@@ -2472,11 +2475,11 @@ class Run(_TestrailObject):
         self.is_completed = attributes['is_completed']
         self.completed_on_stamp = attributes['completed_on']
 
+        self.created_on = datetime.datetime.fromtimestamp(float(attributes['created_on']))
+
         try:
-            self.created_on = datetime.datetime.fromtimestamp(float(attributes['created_on']))
             self.completed_on = datetime.datetime.fromtimestamp(float(attributes['completed_on']))
         except TypeError:
-            self.created_on = None
             self.completed_on = None
 
         self.passed_count = attributes['passed_count']
@@ -2928,7 +2931,10 @@ class Case(_TestrailObject):
         self.created_on = datetime.datetime.fromtimestamp(float(attributes['created_on']))
         self.created_by_id = attributes['created_by']
         self.updated_on_stamp = attributes['updated_on']
-        self.updated_on = datetime.datetime.fromtimestamp(float(attributes['updated_on']))
+        try:
+            self.updated_on = datetime.datetime.fromtimestamp(float(attributes['updated_on']))
+        except TypeError:
+            self.updated_on = None
         self.updated_by_id = attributes['updated_by']
 
         # and all the custom fields:
