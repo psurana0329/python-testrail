@@ -3114,16 +3114,19 @@ class Test(_TestrailObject):
         return Test(TestrailAPI.get_test(test_id))
 
     def add_result(self,
-                   status_name,
-                   comment='',
+                   status_name=None,
+                   comment=None,
                    version=None,
                    elapsed=None,
                    defects=None,
                    assignedto=None):
-        data = {
-            'status_id': Testrail.get_status_by_name(status_name).id,
-            'comment': comment
-        }
+        data = {}
+
+        if status_name is not None:
+            data['status_id'] = Testrail.get_status_by_name(status_name).id
+
+        if comment is not None:
+            data['comment'] = comment
 
         if version is not None:
             data['version'] = version
@@ -3139,17 +3142,63 @@ class Test(_TestrailObject):
 
         return Result(TestrailAPI.add_result(self.id, **data))
 
-    def set_passed(self, **kwargs):
-        return self.add_result('Passed', **kwargs)
+    def add_comment(self,
+                    comment,
+                    assignedto=None):
+        return self.add_result(comment=comment,
+                               assignedto=assignedto)
 
-    def set_blocked(self, **kwargs):
-        return self.add_result('Blocked', **kwargs)
+    def set_passed(self,
+                   comment=None,
+                   version=None,
+                   elapsed=None,
+                   defects=None,
+                   assignedto=None):
+        return self.add_result('Passed',
+                               comment=comment,
+                               version=version,
+                               elapsed=elapsed,
+                               defects=defects,
+                               assignedto=assignedto)
 
-    def set_retest(self, **kwargs):
-        return self.add_result('Retest', **kwargs)
+    def set_blocked(self,
+                   comment=None,
+                   version=None,
+                   elapsed=None,
+                   defects=None,
+                   assignedto=None):
+        return self.add_result('Blocked',
+                               comment=comment,
+                               version=version,
+                               elapsed=elapsed,
+                               defects=defects,
+                               assignedto=assignedto)
 
-    def set_failed(self, **kwargs):
-        return self.add_result('Failed', **kwargs)
+    def set_retest(self,
+                   comment=None,
+                   version=None,
+                   elapsed=None,
+                   defects=None,
+                   assignedto=None):
+        return self.add_result('Retest',
+                               comment=comment,
+                               version=version,
+                               elapsed=elapsed,
+                               defects=defects,
+                               assignedto=assignedto)
+
+    def set_failed(self,
+                   comment=None,
+                   version=None,
+                   elapsed=None,
+                   defects=None,
+                   assignedto=None):
+        return self.add_result('Failed',
+                               comment=comment,
+                               version=version,
+                               elapsed=elapsed,
+                               defects=defects,
+                               assignedto=assignedto)
 
     def results(self,
                 statuses=None,
