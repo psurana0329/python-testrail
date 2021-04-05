@@ -1,9 +1,4 @@
-WARNING
-=======
 
-This project is obsolete. 
-
-You may want to check its fork at https://github.com/lujianlujian/python-testrail
 
 
 testrail-python
